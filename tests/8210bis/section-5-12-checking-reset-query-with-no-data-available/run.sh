@@ -17,8 +17,7 @@ $RSYNC --daemon --bwlimit=1 --config="sandbox/rsyncd/rsyncd.conf"
 
 rp_start
 export RP_PID="$!"
-
-sleep 0.2
+wait_rp_output "INF: [127.0.0.1]:8323: Success."
 
 start_router
 

@@ -74,6 +74,11 @@ start_rp() {
 	rp_start "$@"
 	export RP_PID="$!"
 
+	wait_rp_output "$(rp_ready_string)"
+}
+
+# Wait until the RP outputs the "$1" string, with timeout.
+wait_rp_output() {
 	# 30s timeout
 	for i in $(seq 150); do
 		sleep 0.2
@@ -81,13 +86,13 @@ start_rp() {
 		if ! kill -0 "$RP_PID" 2> /dev/null; then
 			fail "$RP died. (See $SANDBOX/$RP.log)"
 		fi
-		if grep -q "$(rp_ready_string)" "$SANDBOX/$RP.log"; then
+		if grep -Fq "$1" "$SANDBOX/$RP.log"; then
 			return 0
 		fi
 	done
 
 	stop_rp
-	fail "Timeout. $RP did not finish the validation cycle."
+	fail "Timeout. $RP did not output '$1'."
 }
 
 stop_rp() {
@@ -323,21 +328,8 @@ revalidate_rp() {
 	# TODO Fort hardcode
 	kill -USR1 "$RP_PID"
 
-	# 3s timeout
-	for i in $(seq 15); do
-		sleep 0.2
-
-		if ! kill -0 "$RP_PID" 2> /dev/null; then
-			fail "$RP died. (See $SANDBOX/$RP.log)"
-		fi
-		# TODO Fort hardcode
-		if grep -q "Main loop: Sleeping." "$SANDBOX/$RP.log"; then
-			return 0
-		fi
-	done
-
-	stop_rp
-	fail "Timeout. $RP did not finish the validation cycle."
+	# TODO Fort hardcode
+	wait_rp_output "Main loop: Sleeping."
 }
 
 stop_router() {
