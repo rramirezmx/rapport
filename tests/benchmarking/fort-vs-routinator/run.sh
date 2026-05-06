@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. tools/benchmk.sh
+. tests/$CATEGORY/checks.sh
 
 RPKI_DIR="/tmp/rpki"
 CACHE_ROUTINATOR="$RPKI_DIR/cache-routinator"
