@@ -3,19 +3,8 @@
 . tools/checks.sh
 . rp/$RP.sh
 
-ASID="16842752"
-PROVIDERS=4000
+PROVIDERS=1400000
 FILE_RD="tests/$CATEGORY/$TEST/rd"
-
-ASPA=$(awk -v id="$ASID" -v n="$PROVIDERS" 'BEGIN {
-    printf "%s:[", id
-    for (i=1; i<=n; i++) {
-        printf "%s%s", i, (i==n ? "" : ",")
-    }
-    print "]"
-}')
-
-#printf "%s\n" "$ASPA"
 
 echo "ta.cer" > "$FILE_RD"
 echo "\tca.cer" >> "$FILE_RD"
@@ -29,7 +18,9 @@ echo "]" >> "$FILE_RD"
 run_barry
 run_rp
 
+check_logfile fort1 -F "Too many providers: $PROVIDERS > 4000"
+
 check_vrps
-check_aspas $ASPA
+check_aspas
 
 stop_rp

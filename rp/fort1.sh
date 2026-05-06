@@ -27,13 +27,14 @@ rp_run() {
 rp_start() {
 	# Logic to change the IP to 10.0.0.1 only in case of testing with a Cisco router.
 	if [ "$1" = "for_cisco_test" ]; then
-        SERVER_IP="10.0.0.1"
-        # We only shift if it's "for_cisco_test" so that it doesn't go to the binary
-        shift
-    else
-        SERVER_IP="127.0.0.1"
-        # We do NOT shift: "$1" stays as "$@" for binary
-    fi
+		SERVER_IP="10.0.0.1"
+		# We only shift if it's "for_cisco_test" so that it doesn't go to the binary
+		shift
+	else
+		SERVER_IP="127.0.0.1"
+		# We do NOT shift: "$1" stays as "$@" for binary
+	fi
+	
 	$VALGRIND $RP_BIN \
 		--mode "server" \
 		--server.address "$SERVER_IP" \
